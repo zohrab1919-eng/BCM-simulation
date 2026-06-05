@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BCM Simulation — Host Dashboard | Enablerz</title>
+  <link rel="stylesheet" href="/host/host.css"/>
+</head>
+<body>
+
+<!-- Setup Screen -->
+<div id="setup-screen">
+  <h1>BCM Simulation</h1>
+  <p class="subtitle">Enablerz Consulting & Solutions — Host Dashboard</p>
+  <div class="card">
+    <div class="form-group">
+      <label class="form-label">Your Name (Host / Facilitator)</label>
+      <input class="form-input" id="host-name" placeholder="e.g. Zohrab Chong"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Organisation Name</label>
+      <input class="form-input" id="org-name" placeholder="e.g. Enablerz Consulting & Solutions"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Session / Cohort Name</label>
+      <input class="form-input" id="session-name" placeholder="e.g. FWD Indonesia — VERSE Cohort"/>
+    </div>
+    <div id="setup-error" class="alert alert-err hidden"></div>
+    <button class="btn btn-primary btn-lg" id="create-session-btn" style="margin-top:8px">Create Session →</button>
+  </div>
+
+  <div style="margin-top:20px;text-align:center">
+    <p style="font-size:12px;color:var(--grey);margin-bottom:8px">Returning to an existing session?</p>
+    <div style="display:flex;gap:8px">
+      <input class="form-input" id="reconnect-code" placeholder="Session code e.g. BCM-X4K7" style="flex:1"/>
+      <button class="btn btn-ghost" id="reconnect-btn">Rejoin</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Dashboard (hidden until session created) -->
+<div id="dashboard" class="hidden">
+  <!-- Top Bar -->
+  <div id="topbar">
+    <div>
+      <div class="session-code" id="tb-code"></div>
+      <div class="org-name" id="tb-org"></div>
+    </div>
+    <div id="phase-indicator" style="font-size:13px;color:var(--teal-light);text-transform:uppercase;letter-spacing:1px"></div>
+    <div class="timer-display" id="timer-display">—</div>
+    <div class="top-actions">
+      <button class="btn btn-ghost" id="qr-btn">QR Code</button>
+      <button class="btn btn-amber" id="pause-btn">⏸ Pause</button>
+      <button class="btn btn-ghost" id="lb-toggle-btn">Leaderboard ✓</button>
+    </div>
+  </div>
+
+  <!-- Broadcast bar -->
+  <div id="broadcast-bar" class="broadcast-bar hidden"></div>
+
+  <!-- Three-panel layout -->
+  <div id="main-layout">
+    <!-- Left: Team List -->
+    <div class="panel" id="left-panel">
+      <div class="panel-title">Teams (<span id="team-count">0</span>)</div>
+      <div id="team-list"></div>
+    </div>
+
+    <!-- Centre: Controls -->
+    <div id="centre-panel">
+      <!-- LOBBY phase -->
+      <div id="phase-lobby">
+        <div class="phase-header">Phase 0</div>
+        <div class="phase-title">Waiting Room</div>
+        <div class="alert alert-info" id="join-url-display"></div>
+        <div style="margin-bottom:16px">
+          <div class="form-group">
+            <label class="form-label">Select Industry for All Teams</label>
+            <select class="form-select" id="industry-select">
+              <option value="">— Select Industry —</option>
+            </select>
+          </div>
+          <div id="scenario-list" class="hidden">
+            <div class="form-label" style="margin-bottom:8px">Select Scenario (or leave blank for random)</div>
+            <div id="scenario-cards"></div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg" id="start-setup-btn">Start Company Setup →</button>
+      </div>
+
+      <!-- COMPANY SETUP phase -->
+      <div id="phase-setup" class="hidden">
+        <div class="phase-header">Phase 1</div>
+        <div class="phase-title">Company Setup</div>
+        <div class="alert alert-info">Teams are setting up their companies. Monitor progress on the left.</div>
+        <div style="margin:16px 0">
+          <div class="form-label" style="margin-bottom:8px">Setup Progress</div>
+          <div id="setup-progress-bar" style="background:rgba(255,255,255,0.1);border-radius:8px;height:12px;overflow:hidden">
+            <div id="setup-progress-fill" style="height:100%;background:var(--teal);width:0%;transition:width 0.3s"></div>
+          </div>
+          <div id="setup-progress-text" style="font-size:12px;color:var(--grey);margin-top:4px">0 of 0 teams ready</div>
+        </div>
+        <button class="btn btn-primary btn-lg" id="start-briefing-btn">Proceed to Threat Briefing →</button>
+      </div>
+
+      <!-- THREAT BRIEFING phase -->
+      <div id="phase-briefing" class="hidden">
+        <div class="phase-header">Phase 2</div>
+        <div class="phase-title">Threat Briefing</div>
+        <div class="wave-card" id="trigger-text-card" style="border-left-color:var(--red)">
+          <div class="wave-badge" style="color:var(--red)">⚠ DISRUPTION EVENT</div>
+          <div class="wave-event" id="trigger-text-display"></div>
+        </div>
+        <div class="alert alert-warn">Teams have 3 minutes to discuss. Simulation begins automatically, or advance manually.</div>
+        <button class="btn btn-amber btn-lg" id="start-sim-btn">Start Simulation Now →</button>
+      </div>
+
+      <!-- SIMULATION phase -->
+      <div id="phase-simulation" class="hidden">
+        <div class="phase-header">Phase 3 — <span id="wave-progress-label">Wave 1</span></div>
+        <div class="phase-title" id="wave-time-label">Hour 1</div>
+        <div class="wave-card" id="wave-event-card">
+          <div class="wave-badge">ESCALATION EVENT</div>
+          <div class="wave-event" id="wave-event-text"></div>
+        </div>
+        <div style="margin-bottom:16px">
+          <div class="form-label" style="margin-bottom:8px">Team Submission Status</div>
+          <div id="submission-status"></div>
+        </div>
+        <div class="controls-grid three" style="margin-bottom:12px">
+          <button class="btn btn-ghost" id="extend-btn">+2 min</button>
+          <button class="btn btn-ghost" id="skip-wave-btn">Skip Wave</button>
+          <button class="btn btn-amber" id="lock-round-btn">Lock Round →</button>
+        </div>
+        <hr class="divider"/>
+        <div class="form-group">
+          <label class="form-label">Broadcast message to all screens</label>
+          <div style="display:flex;gap:8px">
+            <input class="form-input" id="broadcast-input" placeholder="Type message..."/>
+            <button class="btn btn-ghost" id="send-broadcast-btn">Send</button>
+          </div>
+        </div>
+        <div class="controls-grid" style="margin-top:8px">
+          <button class="btn btn-green" id="recovery-sprint-btn">Recovery Sprint</button>
+          <button class="btn btn-red" id="end-sim-btn">End Simulation</button>
+        </div>
+        <!-- Round outcomes -->
+        <div id="round-outcomes" class="hidden" style="margin-top:20px">
+          <div class="form-label" style="margin-bottom:8px">Round Outcomes</div>
+          <div id="outcomes-grid" class="outcome-grid"></div>
+        </div>
+      </div>
+
+      <!-- RECOVERY SPRINT -->
+      <div id="phase-recovery" class="hidden">
+        <div class="phase-header">Phase 4</div>
+        <div class="phase-title">Recovery Sprint</div>
+        <div class="alert alert-info">Teams have 5 minutes to spend remaining war chest on final recovery actions.</div>
+      </div>
+
+      <!-- DEBRIEF -->
+      <div id="phase-debrief" class="hidden">
+        <div class="phase-header">Phase 5</div>
+        <div class="phase-title">Debrief & Results</div>
+        <div id="final-results-summary"></div>
+        <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+          <a id="download-reports-btn" class="btn btn-primary" href="#" style="text-decoration:none">Download All Reports (ZIP)</a>
+          <button class="btn btn-amber" id="rerun-btn">Re-run Simulation</button>
+          <button class="btn btn-ghost" id="view-leaderboard-btn">View Full Leaderboard</button>
+        </div>
+        <div style="margin-top:16px">
+          <div class="form-label" style="margin-bottom:8px">Key Lesson (Scenario Debrief Note)</div>
+          <div id="debrief-notes" style="background:rgba(255,255,255,0.06);border-radius:8px;padding:14px;font-size:13px;line-height:1.6;color:var(--grey)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Leaderboard -->
+    <div class="panel" id="right-panel">
+      <div class="panel-title">Live Leaderboard</div>
+      <div id="leaderboard-list"></div>
+      <hr class="divider" style="margin-top:16px"/>
+      <div class="panel-title" style="margin-top:12px">Adjust Score</div>
+      <div class="form-group">
+        <select class="form-select" id="adj-team-select"><option value="">— Team —</option></select>
+      </div>
+      <div class="form-group">
+        <select class="form-select" id="adj-dim-select">
+          <option value="financial">Financial</option>
+          <option value="regulatory">Regulatory</option>
+          <option value="reputation">Reputation</option>
+          <option value="operational">Operational</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <input class="form-input" type="number" id="adj-delta" placeholder="e.g. +5 or -3" style="width:100%"/>
+      </div>
+      <div class="form-group">
+        <input class="form-input" id="adj-reason" placeholder="Reason (logged)"/>
+      </div>
+      <button class="btn btn-amber" style="width:100%" id="adj-apply-btn">Apply Adjustment</button>
+    </div>
+  </div>
+</div>
+
+<!-- QR Modal -->
+<div class="modal-overlay hidden" id="qr-modal">
+  <div class="modal">
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px">Participant Join Link</div>
+    <img id="qr-image" src="" alt="QR Code"/>
+    <div class="url" id="join-url-text"></div>
+    <div style="margin-top:16px;display:flex;gap:10px;justify-content:center">
+      <a id="qr-download" class="btn btn-teal" href="#" download="BCM_QR.png" style="background:var(--teal);color:#fff;text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:600">Download QR</a>
+      <button class="btn btn-ghost" onclick="document.getElementById('qr-modal').classList.add('hidden')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared/constants.js"></script>
+<script src="/host/host.js"></script>
+</body>
+</html>

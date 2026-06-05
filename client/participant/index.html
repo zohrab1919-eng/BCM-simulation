@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>BCM Simulation — Join</title>
+  <link rel="stylesheet" href="/participant/participant.css"/>
+</head>
+<body>
+
+<!-- Broadcast overlay -->
+<div id="broadcast-overlay"></div>
+
+<!-- Disruption overlay (threat briefing) -->
+<div id="disruption-overlay" class="hidden">
+  <div class="content">
+    <div class="warning-icon">⚠️</div>
+    <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:16px">DISRUPTION EVENT</div>
+    <div class="trigger-text" id="disruption-text"></div>
+    <div class="dismiss-hint">Tap anywhere to dismiss</div>
+  </div>
+</div>
+
+<!-- Sticky header (hidden until joined) -->
+<div id="sticky-header" class="hidden">
+  <div>
+    <div class="phase-label" id="phase-label">Lobby</div>
+    <div class="team-name" id="header-team-name"></div>
+  </div>
+  <div id="war-chest-display">RM —</div>
+</div>
+
+<!-- Timer bar (hidden until simulation) -->
+<div id="timer-bar" class="hidden">
+  <div>
+    <div id="timer-label">Decision Window</div>
+    <div id="countdown">—</div>
+  </div>
+  <div id="submission-badge" class="hidden">✓ Submitted</div>
+</div>
+
+<!-- Main content -->
+<div id="main-content">
+
+  <!-- JOIN SCREEN -->
+  <div id="join-screen" class="screen">
+    <h2>BCM Simulation</h2>
+    <p class="subtitle">Enablerz Consulting & Solutions</p>
+
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label">Session Code</label>
+        <input class="form-input" id="session-code-input" placeholder="e.g. BCM-X4K7" maxlength="8" style="text-transform:uppercase;letter-spacing:2px"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input class="form-input" id="member-name-input" placeholder="First name or nickname"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Team</label>
+        <div style="display:flex;gap:8px">
+          <input class="form-input" id="team-name-input" placeholder="Create new team name" style="flex:1"/>
+        </div>
+        <div style="font-size:12px;color:var(--grey);margin-top:6px">Enter a new team name, or ask your facilitator for your team name.</div>
+      </div>
+      <div id="join-error" class="alert alert-err hidden"></div>
+      <button class="btn btn-primary" id="join-btn">Join Session →</button>
+    </div>
+  </div>
+
+  <!-- LOBBY WAITING -->
+  <div id="lobby-screen" class="screen hidden">
+    <div id="waiting-display">
+      <div class="waiting-icon">🏢</div>
+      <h3>You're in!</h3>
+      <p>Waiting for the facilitator to start Company Setup…</p>
+      <div style="margin-top:20px;font-size:13px;color:var(--grey)" id="team-members-preview"></div>
+    </div>
+  </div>
+
+  <!-- COMPANY SETUP -->
+  <div id="setup-screen" class="screen hidden">
+    <h2>Company Setup</h2>
+    <p class="subtitle">Build your fictional company before the crisis hits.</p>
+
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label">Company Name</label>
+        <input class="form-input" id="company-name-input" placeholder="Your fictional company name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Archetype</label>
+        <select class="form-select" id="archetype-select">
+          <option value="">— Select —</option>
+          <option value="startup">Startup</option>
+          <option value="mid_market">Mid-Market</option>
+          <option value="enterprise">Enterprise</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Company Size</label>
+        <select class="form-select" id="headcount-select">
+          <option value="">— Select —</option>
+          <option value="small">Small (under 100 staff)</option>
+          <option value="medium">Medium (100–500 staff)</option>
+          <option value="large">Large (500+ staff)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="form-label" style="margin-bottom:10px">Departments (max 10)</div>
+      <div id="dept-chips" style="margin-bottom:12px"></div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="custom-dept-input" placeholder="Add custom department…" style="flex:1;font-size:14px"/>
+        <button class="btn btn-ghost btn-sm" id="add-dept-btn">Add</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="form-label" style="margin-bottom:10px">Your Role</div>
+      <div class="form-group">
+        <label class="form-label">Assign yourself to a department</label>
+        <select class="form-select" id="my-dept-select"><option value="">— Select your department —</option></select>
+      </div>
+    </div>
+
+    <div id="war-chest-preview" class="alert alert-info hidden"></div>
+    <div id="setup-error" class="alert alert-err hidden"></div>
+    <button class="btn btn-primary" id="save-setup-btn">Save Setup ✓</button>
+    <div id="setup-saved" class="alert alert-info hidden" style="margin-top:12px;text-align:center">Setup saved! Waiting for other teams…</div>
+  </div>
+
+  <!-- THREAT BRIEFING -->
+  <div id="briefing-screen" class="screen hidden">
+    <div id="waiting-display">
+      <div class="waiting-icon">🚨</div>
+      <h3>Threat Briefing</h3>
+      <p>Read the disruption event. Discuss with your team.</p>
+      <div style="margin-top:20px;background:rgba(220,38,38,0.1);border:1px solid var(--red);border-radius:12px;padding:18px;text-align:left">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:8px">DISRUPTION EVENT</div>
+        <div id="briefing-trigger-text" style="font-size:15px;line-height:1.7"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIMULATION -->
+  <div id="simulation-screen" class="screen hidden">
+    <!-- War chest depleted banner -->
+    <div id="depleted-banner">⚠ War Chest Exhausted — No further actions available</div>
+
+    <!-- Score dashboard (shown between rounds) -->
+    <div id="score-dashboard-wrap" class="hidden">
+      <div class="form-label" style="margin-bottom:10px">Your Scores</div>
+      <div id="score-dashboard">
+        <div class="score-card" id="sc-financial"><div class="dim-name">Financial</div><div class="dim-value" id="sv-financial">25</div><div class="dim-bar"><div class="dim-bar-fill" id="sb-financial" style="width:100%"></div></div></div>
+        <div class="score-card" id="sc-regulatory"><div class="dim-name">Regulatory</div><div class="dim-value" id="sv-regulatory">25</div><div class="dim-bar"><div class="dim-bar-fill" id="sb-regulatory" style="width:100%"></div></div></div>
+        <div class="score-card" id="sc-reputation"><div class="dim-name">Reputation</div><div class="dim-value" id="sv-reputation">25</div><div class="dim-bar"><div class="dim-bar-fill" id="sb-reputation" style="width:100%"></div></div></div>
+        <div class="score-card" id="sc-operational"><div class="dim-name">Operational</div><div class="dim-value" id="sv-operational">25</div><div class="dim-bar"><div class="dim-bar-fill" id="sb-operational" style="width:100%"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Wave display -->
+    <div id="wave-display" class="hidden">
+      <div id="wave-badge">WAVE 1 — Hour 1</div>
+      <div id="wave-time"></div>
+      <div id="wave-event"></div>
+    </div>
+
+    <!-- Lever selection -->
+    <div id="lever-section" class="hidden">
+      <div class="form-label" style="margin-bottom:10px">Choose Your Recovery Actions</div>
+      <div id="lever-list"></div>
+      <div style="margin-top:8px;font-size:13px;color:var(--grey)" id="spend-summary">Total spend: RM 0</div>
+      <button class="btn btn-amber" id="submit-decisions-btn" style="margin-top:12px">Lock In Decisions →</button>
+    </div>
+
+    <!-- Post-submission wait -->
+    <div id="submitted-wait" class="hidden">
+      <div class="alert alert-info" style="text-align:center">
+        <div style="font-size:18px;margin-bottom:4px">✓ Decisions Locked</div>
+        <div>Waiting for other teams and the facilitator…</div>
+      </div>
+    </div>
+
+    <!-- Outcome panel -->
+    <div id="outcome-panel" class="hidden">
+      <h3>Round Outcome</h3>
+      <div id="outcome-content"></div>
+    </div>
+  </div>
+
+  <!-- RECOVERY SPRINT -->
+  <div id="recovery-screen" class="screen hidden">
+    <div class="alert alert-warn" style="margin-bottom:16px">
+      <strong>Recovery Sprint!</strong> Spend your remaining war chest to reduce total damage.
+    </div>
+    <div id="recovery-lever-list"></div>
+    <div style="margin-top:8px;font-size:13px;color:var(--grey)" id="recovery-spend-summary">Total spend: RM 0</div>
+    <button class="btn btn-amber" id="submit-recovery-btn" style="margin-top:12px">Submit Recovery Actions →</button>
+  </div>
+
+  <!-- DEBRIEF -->
+  <div id="debrief-screen" class="screen hidden">
+    <h2 style="text-align:center;margin-bottom:4px">Final Results</h2>
+    <p style="text-align:center;color:var(--grey);margin-bottom:20px;font-size:14px" id="debrief-company-name"></p>
+    <div class="resilience-score" id="final-resilience">—</div>
+    <p style="text-align:center;color:var(--grey);margin-bottom:24px;font-size:13px">Final Resilience Score</p>
+
+    <div class="card" id="final-dim-scores"></div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="form-label" style="margin-bottom:8px">War Chest</div>
+      <div id="final-war-chest" style="font-size:14px;color:var(--grey)"></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="form-label" style="margin-bottom:8px;color:#34D399">What Went Well</div>
+      <div id="final-well" style="font-size:14px;line-height:1.7"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="form-label" style="margin-bottom:8px;color:#F87171">Gaps to Address</div>
+      <div id="final-gaps" style="font-size:14px;line-height:1.7"></div>
+    </div>
+
+    <div style="margin-top:20px;text-align:center;font-size:12px;color:var(--grey)">
+      Generated by Enablerz BCM Simulation | Enablerz Consulting & Solutions
+    </div>
+  </div>
+
+</div><!-- /main-content -->
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared/constants.js"></script>
+<script src="/participant/participant.js"></script>
+</body>
+</html>

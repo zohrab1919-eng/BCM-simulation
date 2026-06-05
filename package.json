@@ -1,0 +1,27 @@
+{
+  "name": "bcm-simulation",
+  "version": "1.0.0",
+  "description": "Enablerz BCM Simulation Game — Business Continuity Management training tool",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "archiver": "^6.0.1",
+    "docx": "^8.5.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "qrcode": "^1.5.3",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  },
+  "keywords": ["BCM", "simulation", "training", "business-continuity"],
+  "author": "Enablerz Consulting & Solutions",
+  "license": "UNLICENSED"
+}

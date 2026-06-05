@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BCM Simulation — Leaderboard</title>
+  <style>
+    :root {
+      --navy: #1B3A5C; --teal: #1A7A6E; --teal-light: #22A090;
+      --amber: #E8A020; --red: #DC2626; --green: #059669;
+      --grey: #6B7280; --white: #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--navy); color: var(--white); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; overflow: hidden; }
+
+    #header { text-align: center; padding: 24px 40px 16px; border-bottom: 2px solid var(--teal); display: flex; align-items: center; justify-content: space-between; }
+    #header .brand { font-size: 14px; color: var(--grey); }
+    #header .title { font-size: 28px; font-weight: 700; }
+    #header .session-info { font-size: 14px; color: var(--teal-light); }
+
+    #leaderboard { padding: 24px 40px; }
+
+    .team-row { display: flex; align-items: center; gap: 20px; padding: 16px 24px; background: rgba(255,255,255,0.05); border-radius: 14px; margin-bottom: 12px; border-left: 6px solid var(--grey); transition: all 0.4s; }
+    .team-row.rank-1 { border-left-color: #FFD700; background: rgba(255,215,0,0.06); }
+    .team-row.rank-2 { border-left-color: #C0C0C0; background: rgba(192,192,192,0.05); }
+    .team-row.rank-3 { border-left-color: #CD7F32; background: rgba(205,127,50,0.05); }
+
+    .rank-num { font-size: 40px; font-weight: 900; min-width: 60px; text-align: center; }
+    .rank-1 .rank-num { color: #FFD700; }
+    .rank-2 .rank-num { color: #C0C0C0; }
+    .rank-3 .rank-num { color: #CD7F32; }
+    .rank-num.other { color: var(--grey); }
+
+    .team-name { font-size: 28px; font-weight: 700; flex: 1; }
+
+    .dim-scores { display: flex; gap: 12px; }
+    .dim-score { text-align: center; }
+    .dim-score .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--grey); }
+    .dim-score .value { font-size: 24px; font-weight: 700; }
+    .dim-score.financial .value { color: var(--amber); }
+    .dim-score.regulatory .value { color: var(--teal-light); }
+    .dim-score.reputation .value { color: #A78BFA; }
+    .dim-score.operational .value { color: #34D399; }
+
+    .resilience { font-size: 52px; font-weight: 900; color: var(--teal-light); min-width: 100px; text-align: right; }
+    .rank-1 .resilience { color: #FFD700; }
+
+    #waiting-msg { text-align: center; padding: 80px 40px; }
+    #waiting-msg h2 { font-size: 32px; margin-bottom: 12px; }
+    #waiting-msg p { color: var(--grey); font-size: 18px; }
+
+    #code-entry { max-width: 400px; margin: 60px auto; text-align: center; }
+    #code-entry h2 { font-size: 24px; margin-bottom: 20px; }
+    #code-entry input { width: 100%; padding: 16px; font-size: 24px; text-align: center; letter-spacing: 4px; text-transform: uppercase; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; color: var(--white); }
+    #code-entry button { margin-top: 16px; width: 100%; padding: 16px; background: var(--teal); color: var(--white); border: none; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; }
+
+    .bar-row { margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+    .bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+    #bottom-strip { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(27,58,92,0.95); border-top: 1px solid var(--teal); padding: 10px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--grey); }
+
+    .hidden { display: none !important; }
+    @keyframes slideIn { from { opacity:0; transform: translateX(-20px); } to { opacity:1; transform: translateX(0); } }
+    .team-row { animation: slideIn 0.4s ease; }
+  </style>
+</head>
+<body>
+
+<div id="code-entry">
+  <h2>BCM Simulation Leaderboard</h2>
+  <p style="color:var(--grey);margin-bottom:20px;font-size:15px">Enter session code to connect</p>
+  <input id="code-input" placeholder="BCM-XXXX" maxlength="8"/>
+  <button id="connect-btn">Connect</button>
+</div>
+
+<div id="main" class="hidden">
+  <div id="header">
+    <div class="brand">Enablerz Consulting & Solutions</div>
+    <div class="title">BCM Simulation — Leaderboard</div>
+    <div class="session-info" id="session-label"></div>
+  </div>
+
+  <div id="waiting-msg">
+    <h2>⏳ Waiting for game to begin…</h2>
+    <p>Leaderboard will update live during the simulation.</p>
+  </div>
+
+  <div id="leaderboard" class="hidden"></div>
+</div>
+
+<div id="bottom-strip">
+  <span>Enablerz BCM Simulation</span>
+  <span id="phase-strip">Phase: —</span>
+  <span id="time-strip"></span>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+let sessionCode = null;
+const savedCode = localStorage.getItem('bcm_lb_session');
+if (savedCode) connectToSession(savedCode);
+
+document.getElementById('connect-btn').addEventListener('click', () => {
+  const code = document.getElementById('code-input').value.trim().toUpperCase();
+  if (!code) return;
+  connectToSession(code);
+});
+
+document.getElementById('code-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('connect-btn').click();
+});
+
+function connectToSession(code) {
+  sessionCode = code;
+  localStorage.setItem('bcm_lb_session', code);
+  socket.emit('host:reconnect', { code });
+  document.getElementById('session-label').textContent = code;
+  document.getElementById('code-entry').classList.add('hidden');
+  document.getElementById('main').classList.remove('hidden');
+}
+
+socket.on('game:state_restore', (session) => {
+  document.getElementById('phase-strip').textContent = 'Phase: ' + (session.phase || '—');
+  if (session.phase === 'DEBRIEF') {
+    // If we missed the final results, compute from teams
+  }
+});
+
+socket.on('game:leaderboard_update', ({ leaderboard }) => {
+  renderLeaderboard(leaderboard);
+});
+
+socket.on('game:final_results', ({ finalScores }) => {
+  renderLeaderboard(finalScores);
+});
+
+socket.on('game:phase_update', ({ phase }) => {
+  document.getElementById('phase-strip').textContent = 'Phase: ' + phase;
+  if (phase === 'SIMULATION' || phase === 'RECOVERY_SPRINT' || phase === 'DEBRIEF') {
+    document.getElementById('waiting-msg').classList.add('hidden');
+    document.getElementById('leaderboard').classList.remove('hidden');
+  }
+});
+
+socket.on('game:timer_update', ({ remaining }) => {
+  const mins = Math.floor(remaining / 60);
+  const secs = remaining % 60;
+  document.getElementById('time-strip').textContent = `Timer: ${mins}:${String(secs).padStart(2,'0')}`;
+});
+
+socket.on('game:leaderboard_visibility', ({ visible }) => {
+  document.getElementById('leaderboard').style.visibility = visible ? 'visible' : 'hidden';
+});
+
+const DIM_COLOURS = { financial: '#E8A020', regulatory: '#22A090', reputation: '#A78BFA', operational: '#34D399' };
+
+function renderLeaderboard(teams) {
+  const container = document.getElementById('leaderboard');
+  if (!teams || teams.length === 0) return;
+  document.getElementById('waiting-msg').classList.add('hidden');
+  container.classList.remove('hidden');
+
+  container.innerHTML = teams.map((team, i) => {
+    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+    const rankNumClass = i >= 3 ? 'other' : '';
+    const dims = ['financial','regulatory','reputation','operational'].map(dim => {
+      const val = team.scores[dim] ?? 0;
+      const pct = Math.round((val / 25) * 100);
+      return `
+        <div class="dim-score ${dim}">
+          <div class="label">${dim[0].toUpperCase()}</div>
+          <div class="value">${val}</div>
+          <div class="bar-row"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${DIM_COLOURS[dim]}"></div></div></div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="team-row ${rankClass}">
+        <div class="rank-num ${rankNumClass}">${team.rank || i+1}</div>
+        <div style="flex:1">
+          <div class="team-name">${team.teamName}</div>
+          <div class="dim-scores" style="margin-top:8px">${dims}</div>
+        </div>
+        <div class="resilience">${team.resilience}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Clock
+setInterval(() => {
+  const now = new Date();
+  document.getElementById('time-strip').textContent = now.toLocaleTimeString('en-MY');
+}, 1000);
+</script>
+</body>
+</html>
