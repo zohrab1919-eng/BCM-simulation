@@ -563,6 +563,340 @@
           ],
           "debrief_notes": "Key lesson: This scenario tests whether teams understand the hierarchy of obligations — safety and legal evidence preservation must happen simultaneously with public communications. Teams frequently hold off the public statement waiting for 'full information' — which causes the reputation penalty to compound. The DOE environmental wave is consistently underestimated.",
           "debrief_template": "BIA_Infrastructure"
+        },
+        {
+          "id": "LOG-03",
+          "name": "Monsoon Landslide — Total Highway Destruction (100m Section)",
+          "severity": "Catastrophic",
+          "probability_weight": 2,
+          "regulatory_flag": true,
+          "reputation_flag": true,
+          "war_chest_impact_label": "RM 50M–200M+ in infrastructure reconstruction, regulatory penalties, revenue loss, and legal liability over 6–18 month recovery horizon",
+          "trigger_text": "At 3:20 AM during peak monsoon season, a massive landslide tears through a hillside embankment and completely destroys approximately 100 metres of your highway. All four lanes — northbound and southbound — have been swept off the alignment. Underground utilities, drainage infrastructure, fibre optic cables, and tolling conduits are gone. There is no road. The section simply does not exist anymore.",
+          "threat_summary": "Catastrophic landslide destroys 100m of full-width highway during monsoon season — total route severance, underground infrastructure loss, extended reconstruction, multi-ministry crisis.",
+          "escalation_waves": [
+            {
+              "wave": 1,
+              "time_label": "Hour 1",
+              "event": "Emergency sensors and a patrol team confirm total route severance — all four lanes gone. No vehicles are trapped in the slide zone. Northbound and southbound traffic is backing up in both directions with no diversion in place yet. Power to the entire section and adjacent toll plazas is lost.",
+              "financial_loss": 500000,
+              "regulatory_score_penalty": 0,
+              "reputation_score_penalty": 10,
+              "operational_score_penalty": 40,
+              "departments_activated": ["Operations & Maintenance", "Traffic Management & Incident Response", "IT & Tolling Systems"]
+            },
+            {
+              "wave": 2,
+              "time_label": "Hour 2",
+              "event": "Morning commuters and logistics trucks are now trapped in standstills stretching 25 kilometres in both directions. Social media is in full flood — aerial drone footage of the destruction has gone viral nationally. News channels are cutting to live coverage.",
+              "financial_loss": 800000,
+              "regulatory_score_penalty": 5,
+              "reputation_score_penalty": 25,
+              "operational_score_penalty": 10,
+              "departments_activated": ["Corporate Communications / PR", "Traffic Management & Incident Response", "Customer Experience & Complaints"]
+            },
+            {
+              "wave": 3,
+              "time_label": "Hour 4",
+              "event": "JKR, IKRAM (Institute of Infrastructure Engineering), and the Slope Engineering Branch (Cawangan Kejuruteraan Cerun, JKR) have been mobilised. Geotechnical engineers confirm the slope above the destroyed section is still unstable — secondary slide risk is active. The site is a restricted zone.",
+              "financial_loss": 1000000,
+              "regulatory_score_penalty": 25,
+              "reputation_score_penalty": 10,
+              "operational_score_penalty": 10,
+              "departments_activated": ["Compliance & Risk Management", "Operations & Maintenance"]
+            },
+            {
+              "wave": 4,
+              "time_label": "Hour 8",
+              "event": "The Prime Minister's office has been briefed. Ministry of Works calls an emergency press conference. Your CEO is being summoned to Putrajaya. Concession agreement force majeure clause is being reviewed — but your last slope maintenance and monitoring report is under scrutiny.",
+              "financial_loss": 2000000,
+              "regulatory_score_penalty": 30,
+              "reputation_score_penalty": 15,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Compliance & Risk Management", "Finance & Revenue Collection (Tolling)", "Corporate Communications / PR"]
+            },
+            {
+              "wave": 5,
+              "time_label": "Day 2",
+              "event": "Preliminary engineering assessment confirms: minimum 6 months to reconstruct the 100m section. Underground utilities — TNB, Telekom, tolling fibre, and drainage — require independent restoration timelines. An alternate route via a federal road adds 45 minutes to the journey. Logistics companies are invoicing for consequential losses.",
+              "financial_loss": 5000000,
+              "regulatory_score_penalty": 10,
+              "reputation_score_penalty": 15,
+              "operational_score_penalty": 10,
+              "departments_activated": ["Finance & Revenue Collection (Tolling)", "Operations & Maintenance", "Compliance & Risk Management"]
+            },
+            {
+              "wave": 6,
+              "time_label": "Day 7",
+              "event": "Parliamentary question filed demanding the Ministry explain how slope monitoring was managed under the concession. Your slope inspection maintenance records are formally requested. Opposition members allege the landslide was preventable. A class action is being organised by affected logistics operators.",
+              "financial_loss": 3000000,
+              "regulatory_score_penalty": 20,
+              "reputation_score_penalty": 20,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Compliance & Risk Management", "Corporate Communications / PR"]
+            },
+            {
+              "wave": 7,
+              "time_label": "Week 4",
+              "event": "Reconstruction tender awarded. Temporary Bailey bridge solution rejected by JKR due to span and load constraints. Full reconstruction cost estimate: RM 85M. Insurance claim submitted but insurer disputes whether slope maintenance obligations were met. Revenue loss now RM 14M and rising.",
+              "financial_loss": 14000000,
+              "regulatory_score_penalty": 15,
+              "reputation_score_penalty": 10,
+              "operational_score_penalty": 10,
+              "departments_activated": ["Finance & Revenue Collection (Tolling)", "Operations & Maintenance", "Compliance & Risk Management"]
+            },
+            {
+              "wave": 8,
+              "time_label": "Month 3",
+              "event": "Geotechnical remediation of the unstable slope above the destroyed section is completed. Reconstruction enters active phase. However, a second slope 300 metres north has been flagged by IKRAM as requiring immediate monitoring — raising questions about the entire corridor's slope risk assessment.",
+              "financial_loss": 8000000,
+              "regulatory_score_penalty": 10,
+              "reputation_score_penalty": 5,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Operations & Maintenance", "Compliance & Risk Management"]
+            }
+          ],
+          "recovery_levers": [
+            {
+              "id": "LOG03-L1",
+              "label": "Activate Emergency Traffic Diversion Plan",
+              "description": "Immediately coordinate with JPJ and POLIS DIRAJA to activate the pre-planned diversion route via federal roads. Deploy traffic marshals at all diversion entry points.",
+              "war_chest_cost": 120000,
+              "score_recovery": { "operational": 20, "reputation": 10 },
+              "waves_mitigated": [1, 2],
+              "departments_required": ["Traffic Management & Incident Response", "Operations & Maintenance"],
+              "if_department_missing": "No diversion coordination — both directions remain gridlocked for hours. Public anger compounds."
+            },
+            {
+              "id": "LOG03-L2",
+              "label": "Crisis Communications — National Level",
+              "description": "Brief the CEO for media. Issue a formal statement to national media within 2 hours. Engage a crisis PR firm. Establish a single authorised spokesperson. Proactively brief the Ministry before the press conference — do not let them find out from news.",
+              "war_chest_cost": 80000,
+              "score_recovery": { "reputation": 25, "regulatory": 10 },
+              "waves_mitigated": [2, 4],
+              "departments_required": ["Corporate Communications / PR"],
+              "if_department_missing": "No authorised spokesperson — Ministry hears about the slide from live TV. CEO is blindsided at Putrajaya."
+            },
+            {
+              "id": "LOG03-L3",
+              "label": "Mobilise Geotechnical Emergency Assessment",
+              "description": "Engage IKRAM and a qualified geotechnical firm within 4 hours to assess secondary slide risk and define safe exclusion zone. Required before any reconstruction work can begin.",
+              "war_chest_cost": 200000,
+              "score_recovery": { "operational": 15, "regulatory": 20 },
+              "waves_mitigated": [3, 8],
+              "departments_required": ["Operations & Maintenance", "Compliance & Risk Management"],
+              "if_department_missing": "Site declared unsafe by JKR without a geotechnical report — all recovery work halted indefinitely."
+            },
+            {
+              "id": "LOG03-L4",
+              "label": "Produce and Submit Slope Maintenance Records",
+              "description": "Immediately compile all slope monitoring logs, inspection records, and maintenance reports for the destroyed section. Submit proactively to JKR and the concession authority before they are formally requested.",
+              "war_chest_cost": 30000,
+              "score_recovery": { "regulatory": 30 },
+              "waves_mitigated": [4, 6],
+              "departments_required": ["Compliance & Risk Management"],
+              "if_department_missing": "Records cannot be located or are incomplete — regulatory investigation escalates, force majeure defence collapses."
+            },
+            {
+              "id": "LOG03-L5",
+              "label": "Underground Utilities Coordination Team",
+              "description": "Establish a joint coordination team with TNB, Telekom, and other utilities providers for parallel restoration planning. Separating this from road reconstruction prevents a sequential bottleneck.",
+              "war_chest_cost": 150000,
+              "score_recovery": { "operational": 20, "financial": 10 },
+              "waves_mitigated": [5, 7],
+              "departments_required": ["Operations & Maintenance", "IT & Tolling Systems"],
+              "if_department_missing": "Utilities restoration is uncoordinated — each provider works sequentially, extending the closure by months."
+            },
+            {
+              "id": "LOG03-L6",
+              "label": "Engage Insurance and Legal Counsel Immediately",
+              "description": "Notify your business interruption insurer and appoint legal counsel on Day 1. Begin building the force majeure case with contemporaneous documentation. Do not wait for the full damage assessment.",
+              "war_chest_cost": 100000,
+              "score_recovery": { "financial": 25, "regulatory": 10 },
+              "waves_mitigated": [5, 7],
+              "departments_required": ["Finance & Revenue Collection (Tolling)", "Compliance & Risk Management"],
+              "if_department_missing": "Insurance claim filed late without proper documentation — insurer disputes liability. Legal position weakened."
+            },
+            {
+              "id": "LOG03-L7",
+              "label": "Full Corridor Slope Risk Audit",
+              "description": "Commission an independent slope risk audit of the entire highway corridor — not just the failed section. Proactively address JKR and Parliamentary concerns before they become enforcement actions.",
+              "war_chest_cost": 300000,
+              "score_recovery": { "regulatory": 20, "reputation": 15 },
+              "waves_mitigated": [6, 8],
+              "departments_required": ["Compliance & Risk Management", "Operations & Maintenance"],
+              "if_department_missing": "Second slope flagged by IKRAM catches the company unprepared — Parliamentary scrutiny intensifies."
+            }
+          ],
+          "debrief_notes": "Key lessons: (1) This is a Category 4 catastrophic event — the concession agreement's force majeure clause becomes central, but only if slope maintenance records are intact. Teams who did not activate LOG03-L4 early face regulatory collapse regardless of their other actions. (2) The underground utilities coordination lever is consistently overlooked — teams focus on road reconstruction and are shocked to learn utilities timelines can independently extend the closure. (3) The full corridor slope audit wave in Month 3 teaches that BCM is not just about the immediate incident — it is about demonstrating systemic safety management. (4) War chest depletion is inevitable in this scenario — the learning is in how teams prioritise their spend across safety, legal, regulatory, and reputational needs simultaneously.",
+          "debrief_template": "BIA_Infrastructure"
+        },
+        {
+          "id": "LOG-04",
+          "name": "Flyover Section Collapse",
+          "severity": "Catastrophic",
+          "probability_weight": 1,
+          "regulatory_flag": true,
+          "reputation_flag": true,
+          "war_chest_impact_label": "RM 100M–500M+ in liability, reconstruction, legal costs, and long-term reputational damage — concession agreement termination risk",
+          "trigger_text": "At 6:45 AM, during the height of the morning rush hour, a 60-metre section of an elevated flyover on your highway collapses. Vehicles are on the flyover when it falls. Emergency services are being called from across the city. This is now a mass casualty incident.",
+          "threat_summary": "Catastrophic structural collapse of a flyover section during peak hours — mass casualty event, criminal liability exposure, potential concession termination, and national infrastructure confidence crisis.",
+          "escalation_waves": [
+            {
+              "wave": 1,
+              "time_label": "Hour 1",
+              "event": "Confirmed: multiple vehicles have fallen with the structure. Search and rescue is underway. EMRS, BOMBA, and POLIS DIRAJA are on site. The entire highway is closed in both directions. The structural integrity of adjacent flyover sections is unknown. The nation is watching.",
+              "financial_loss": 1000000,
+              "regulatory_score_penalty": 10,
+              "reputation_score_penalty": 20,
+              "operational_score_penalty": 40,
+              "departments_activated": ["Traffic Management & Incident Response", "Operations & Maintenance", "HR & Administration"]
+            },
+            {
+              "wave": 2,
+              "time_label": "Hour 2",
+              "event": "Death toll confirmed at 7, with 23 injured. Live coverage on all national channels and international wire services. The Prime Minister has been briefed. Social media has named the concession company and is publishing the maintenance contract records found online.",
+              "financial_loss": 2000000,
+              "regulatory_score_penalty": 15,
+              "reputation_score_penalty": 30,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Corporate Communications / PR", "HR & Administration", "Compliance & Risk Management"]
+            },
+            {
+              "wave": 3,
+              "time_label": "Hour 3",
+              "event": "PDRM has opened a criminal negligence investigation. Your CEO, Chief Engineer, and Head of Compliance are formally named as persons of interest. All structural inspection and maintenance records for the collapsed section and every other flyover on your network are immediately subpoenaed.",
+              "financial_loss": 3000000,
+              "regulatory_score_penalty": 35,
+              "reputation_score_penalty": 10,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Compliance & Risk Management", "Operations & Maintenance"]
+            },
+            {
+              "wave": 4,
+              "time_label": "Hour 6",
+              "event": "The Minister of Works has announced an immediate safety audit of ALL elevated structures on ALL concession highways nationwide. SPAN and JKR have issued a stop-work order on your entire network pending structural clearance. All remaining flyovers and bridges on your highway are closed as a precaution.",
+              "financial_loss": 5000000,
+              "regulatory_score_penalty": 30,
+              "reputation_score_penalty": 15,
+              "operational_score_penalty": 10,
+              "departments_activated": ["Compliance & Risk Management", "Finance & Revenue Collection (Tolling)", "Operations & Maintenance"]
+            },
+            {
+              "wave": 5,
+              "time_label": "Day 2",
+              "event": "Families of the deceased are holding a press conference with their lawyers. Seven civil suits filed. A criminal charge under Section 304A of the Penal Code (causing death by negligence) is being prepared. Your insurer has issued a reservation of rights letter — coverage is not confirmed.",
+              "financial_loss": 10000000,
+              "regulatory_score_penalty": 10,
+              "reputation_score_penalty": 20,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Compliance & Risk Management", "HR & Administration", "Corporate Communications / PR"]
+            },
+            {
+              "wave": 6,
+              "time_label": "Day 7",
+              "event": "Parliamentary emergency session. The concession agreement is under government review — termination clause is being assessed. Your company's credit rating has been downgraded by two notches. Three institutional shareholders have divested. The structural investigation report will take 6 months.",
+              "financial_loss": 20000000,
+              "regulatory_score_penalty": 20,
+              "reputation_score_penalty": 15,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Finance & Revenue Collection (Tolling)", "Compliance & Risk Management", "Corporate Communications / PR"]
+            },
+            {
+              "wave": 7,
+              "time_label": "Month 2",
+              "event": "Structural clearance received for 80% of remaining flyovers — partial reopening permitted. Preliminary investigation finding leaked to media: fatigue cracking in the collapsed section's expansion joints was flagged in an internal inspection 14 months ago. The report was not acted upon.",
+              "financial_loss": 15000000,
+              "regulatory_score_penalty": 25,
+              "reputation_score_penalty": 20,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Compliance & Risk Management", "Corporate Communications / PR"]
+            },
+            {
+              "wave": 8,
+              "time_label": "Month 6",
+              "event": "Government announces a Special Committee to review all highway concession agreements. Full structural investigation report released: the collapse was caused by long-term deferred maintenance. Criminal charges formally filed against two senior engineers. Concession renewal application placed on hold indefinitely.",
+              "financial_loss": 30000000,
+              "regulatory_score_penalty": 20,
+              "reputation_score_penalty": 15,
+              "operational_score_penalty": 5,
+              "departments_activated": ["Compliance & Risk Management", "Finance & Revenue Collection (Tolling)", "Corporate Communications / PR"]
+            }
+          ],
+          "recovery_levers": [
+            {
+              "id": "LOG04-L1",
+              "label": "Declare Mass Casualty Incident — Full Emergency Protocol",
+              "description": "Immediately declare a mass casualty incident and activate your full emergency response protocol. Assign a single incident commander. Establish a command post adjacent to (not on) the collapse site. Full cooperation with BOMBA search and rescue — provide site drawings and utilities maps immediately.",
+              "war_chest_cost": 50000,
+              "score_recovery": { "operational": 20, "regulatory": 15, "reputation": 10 },
+              "waves_mitigated": [1],
+              "departments_required": ["Traffic Management & Incident Response", "Operations & Maintenance"],
+              "if_department_missing": "Incident command is disorganised — emergency services lack site drawings and utilities maps. Response is delayed."
+            },
+            {
+              "id": "LOG04-L2",
+              "label": "CEO Issues Immediate Personal Statement",
+              "description": "CEO appears on camera within 90 minutes — not a press release, not a spokesperson. Personal acknowledgement of the tragedy. No deflection. Express condolences unreservedly. Confirm full cooperation with all investigations. This is the only communication posture that limits reputational catastrophe at this scale.",
+              "war_chest_cost": 30000,
+              "score_recovery": { "reputation": 30 },
+              "waves_mitigated": [2, 5],
+              "departments_required": ["Corporate Communications / PR"],
+              "if_department_missing": "CEO is unreachable or sends a written statement — perceived as hiding. Media and public response is severe."
+            },
+            {
+              "id": "LOG04-L3",
+              "label": "Legal Counsel and Crisis Management Firm — Immediate Engagement",
+              "description": "Engage criminal defence and civil liability legal counsel and a major crisis management firm within 2 hours. Instruct all employees: do not speak to media, investigators, or external parties without legal counsel present.",
+              "war_chest_cost": 300000,
+              "score_recovery": { "regulatory": 20, "financial": 15 },
+              "waves_mitigated": [3, 5],
+              "departments_required": ["Compliance & Risk Management", "HR & Administration"],
+              "if_department_missing": "Employees make unguided statements to investigators. Legal exposure compounds. Evidence chain mismanaged."
+            },
+            {
+              "id": "LOG04-L4",
+              "label": "Proactive Structural Safety Audit — Entire Network",
+              "description": "Do not wait for the Minister's announcement. Commission an independent structural audit of every flyover and bridge on your network and announce it publicly before the Ministry orders one. This single act partially reclaims the safety narrative.",
+              "war_chest_cost": 500000,
+              "score_recovery": { "regulatory": 25, "reputation": 20 },
+              "waves_mitigated": [4, 7],
+              "departments_required": ["Operations & Maintenance", "Compliance & Risk Management"],
+              "if_department_missing": "Ministry orders the audit first — you are reactive, not proactive. Narrative control is lost entirely."
+            },
+            {
+              "id": "LOG04-L5",
+              "label": "Victim Family Support Programme",
+              "description": "Establish a dedicated family liaison team with HR and external welfare specialists. Contact next-of-kin directly and personally before the press conference. Offer immediate financial assistance without waiting for legal processes. This is both ethically correct and legally strategic.",
+              "war_chest_cost": 200000,
+              "score_recovery": { "reputation": 20, "regulatory": 10 },
+              "waves_mitigated": [2, 5],
+              "departments_required": ["HR & Administration"],
+              "if_department_missing": "Families hear of support options only from lawyers — legal costs and hostility escalate significantly."
+            },
+            {
+              "id": "LOG04-L6",
+              "label": "Locate and Secure All Maintenance and Inspection Records",
+              "description": "Within 2 hours: locate, secure, and legally preserve every inspection report, maintenance log, and work order for the collapsed section and all similar structures. Do this before subpoenas arrive. If there are gaps or concerning findings, brief legal counsel immediately — do not destroy or conceal anything.",
+              "war_chest_cost": 50000,
+              "score_recovery": { "regulatory": 25 },
+              "waves_mitigated": [3, 7],
+              "departments_required": ["Compliance & Risk Management", "Operations & Maintenance"],
+              "if_department_missing": "Records are located and handed to investigators in a disorganised state — or worse, are found to be missing. Criminal exposure multiplies."
+            },
+            {
+              "id": "LOG04-L7",
+              "label": "Engage Government Relations and Concession Authority",
+              "description": "Senior leadership meets with the concession authority and Ministry within 24 hours — not to defend, but to present a full accountability and remediation roadmap. Demonstrate that the company is an active partner in resolution, not a defendant in hiding.",
+              "war_chest_cost": 100000,
+              "score_recovery": { "regulatory": 20, "financial": 10 },
+              "waves_mitigated": [6, 8],
+              "departments_required": ["Compliance & Risk Management", "Finance & Revenue Collection (Tolling)"],
+              "if_department_missing": "Government proceeds with concession review without any direct engagement from the company — termination risk increases."
+            }
+          ],
+          "debrief_notes": "Key lessons: (1) This is a maximum severity scenario — no team will achieve a high score. The learning is in the decision-making under existential pressure, not in 'winning'. (2) The leaked internal inspection report in Month 2 (Wave 7) is the scenario's most important teaching moment — it demonstrates that a BCM plan cannot substitute for actual maintenance compliance. If you deferred maintenance and it caused the event, no amount of crisis response can fully recover your position. (3) Teams consistently underestimate the concession termination risk — they focus on reconstruction and neglect the government relationship levers. (4) The CEO personal statement lever (LOG04-L2) should generate significant discussion: most teams want to wait for facts before the CEO speaks. The debrief should challenge this instinct directly. (5) The victim family support lever (LOG04-L5) is ethically non-negotiable — any team that skips it for cost reasons should have this reflected in the debrief conversation. Facilitator note: run a values-based debrief for this scenario, not just a process debrief.",
+          "debrief_template": "BIA_Infrastructure"
         }
       ]
     },
