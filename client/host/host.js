@@ -447,6 +447,23 @@ document.getElementById('rerun-btn').addEventListener('click', () => {
   }
 });
 
+// ─── Exit / Cancel Session ────────────────────────────────────────────────────
+function handleExitSession() {
+  const msg = sessionCode
+    ? `Exit session ${sessionCode}? Participants will be disconnected. This cannot be undone.`
+    : 'Cancel and return to the start?';
+  if (confirm(msg)) {
+    if (sessionCode) {
+      socket.emit('host:end_simulation', { code: sessionCode, enableRecoverySprint: false });
+    }
+    localStorage.removeItem('bcm_host_session');
+    setTimeout(() => location.reload(), 400);
+  }
+}
+
+document.getElementById('exit-lobby-btn').addEventListener('click', handleExitSession);
+document.getElementById('exit-setup-btn').addEventListener('click', handleExitSession);
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function showError(id, msg) {
   const el = document.getElementById(id);
