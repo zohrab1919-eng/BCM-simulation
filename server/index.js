@@ -178,6 +178,13 @@ io.on('connection', (socket) => {
     if (!team && teamName) {
       if (session.teams.size >= LIMITS.MAX_TEAMS) return socket.emit(SOCKET_EVENTS.GAME_ERROR, { message: 'This session has reached the maximum number of teams.' });
       team = engine.addTeam(uCode, { name: teamName });
+      // Pre-seed default departments if industry is already assigned
+      if (session.industryId && team.departments.length === 0) {
+        const industry = engine.getIndustry(session.industryId);
+        if (industry?.default_departments?.length) {
+          team.departments = [...industry.default_departments];
+        }
+      }
     }
     if (!team) return socket.emit(SOCKET_EVENTS.GAME_ERROR, { message: 'No team found. Please create or select a team.' });
 
@@ -242,6 +249,19 @@ io.on('connection', (socket) => {
     const uCode = code?.toUpperCase();
     const session = engine.getSession(uCode);
     if (!session) return;
+
+    // Seed default departments into teams that haven't set up yet
+    if (phase === PHASES.COMPANY_SETUP && session.industryId) {
+      const industry = engine.getIndustry(session.industryId);
+      if (industry?.default_departments?.length) {
+        for (const [, team] of session.teams) {
+          if (team.departments.length === 0) {
+            team.departments = [...industry.default_departments];
+          }
+        }
+      }
+    }
+
     engine.advancePhase(uCode, phase);
     io.to(uCode).emit(SOCKET_EVENTS.GAME_PHASE_UPDATE, { phase, session: engine.serialiseSession(session) });
 
